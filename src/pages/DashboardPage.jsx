@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Send, Inbox, Clock, Users, ChevronRight,
-  FileText, BookOpen, CheckCircle2,
+  FileText, BookOpen, CheckCircle2, BarChart3,
   TrendingUp, TrendingDown, Minus,
 } from 'lucide-react';
 import Badge from '../components/Badge';
@@ -41,6 +41,7 @@ export default function DashboardPage() {
     { to: '/submit',    icon: <Send size={16} />,     title: 'Submit New Referral',   desc: 'Upload patient file and select a dentist' },
     { to: '/history',   icon: <Clock size={16} />,    title: 'View Referral History', desc: 'Track all sent and received referrals' },
     { to: '/directory', icon: <BookOpen size={16} />, title: 'Browse Directory',      desc: 'Find specialists in your network' },
+    { to: '/analytics', icon: <BarChart3 size={16} />, title: 'View Analytics',      desc: 'Track performance and referral trends' },
   ];
 
   const recentReferrals = sentReferrals.slice(0, 4);

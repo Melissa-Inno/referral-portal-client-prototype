@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Eye, Download, FileSearch, X, FileText, Calendar, User, Stethoscope, Hash, ChevronDown, CheckCircle, XCircle, Inbox } from 'lucide-react';
+import { Eye, Download, FileSearch, X, FileText, Calendar, User, Stethoscope, Hash, ChevronDown, CheckCircle, XCircle, Inbox, AlertTriangle } from 'lucide-react';
 import Badge from '../components/Badge';
 import ExportButton from '../components/ExportButton';
 import { receivedReferrals } from '../data/sampleData';
@@ -8,6 +8,7 @@ export default function ReceivedReferralsPage() {
   const [search, setSearch]             = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [drawerReferral, setDrawerReferral] = useState(null);
+  const [confirmModal, setConfirmModal] = useState(null);
   const [statuses, setStatuses]         = useState(() =>
     Object.fromEntries(receivedReferrals.map(r => [r.id, r.status]))
   );
@@ -21,8 +22,25 @@ export default function ReceivedReferralsPage() {
     return matchSearch && matchStatus;
   });
 
-  function accept(id) { setStatuses(s => ({ ...s, [id]: 'Accepted' })); }
-  function decline(id) { setStatuses(s => ({ ...s, [id]: 'Declined' })); }
+  function doAccept(id) { setStatuses(s => ({ ...s, [id]: 'Accepted' })); }
+  function doDecline(id) { setStatuses(s => ({ ...s, [id]: 'Declined' })); }
+
+  function askConfirm(action, referral) {
+    setConfirmModal({ action, referral });
+  }
+
+  function handleConfirm() {
+    if (!confirmModal) return;
+    const { action, referral } = confirmModal;
+    if (action === 'accept') {
+      doAccept(referral.id);
+      if (drawerReferral?.id === referral.id) setDrawerReferral(r => ({ ...r, status: 'Accepted' }));
+    } else {
+      doDecline(referral.id);
+      if (drawerReferral?.id === referral.id) setDrawerReferral(r => ({ ...r, status: 'Declined' }));
+    }
+    setConfirmModal(null);
+  }
 
   const total     = receivedReferrals.length;
   const pending   = Object.values(statuses).filter(s => s === 'Pending').length;
@@ -138,14 +156,14 @@ export default function ReceivedReferralsPage() {
                               <button
                                 className="icon-action icon-action--success"
                                 title="Accept referral"
-                                onClick={() => accept(r.id)}
+                                onClick={() => askConfirm('accept', r)}
                               >
                                 <CheckCircle size={14} />
                               </button>
                               <button
                                 className="icon-action icon-action--danger"
                                 title="Decline referral"
-                                onClick={() => decline(r.id)}
+                                onClick={() => askConfirm('decline', r)}
                               >
                                 <XCircle size={14} />
                               </button>
@@ -204,8 +222,17 @@ export default function ReceivedReferralsPage() {
         <ReceivedDrawer
           referral={drawerReferral}
           onClose={() => setDrawerReferral(null)}
-          onAccept={() => { accept(drawerReferral.id); setDrawerReferral(r => ({ ...r, status: 'Accepted' })); }}
-          onDecline={() => { decline(drawerReferral.id); setDrawerReferral(r => ({ ...r, status: 'Declined' })); }}
+          onAccept={() => askConfirm('accept', drawerReferral)}
+          onDecline={() => askConfirm('decline', drawerReferral)}
+        />
+      )}
+
+      {confirmModal && (
+        <ConfirmModal
+          action={confirmModal.action}
+          referral={confirmModal.referral}
+          onConfirm={handleConfirm}
+          onCancel={() => setConfirmModal(null)}
         />
       )}
     </>
@@ -299,5 +326,46 @@ function ReceivedDrawer({ referral: r, onClose, onAccept, onDecline }) {
         </div>
       </div>
     </>
+  );
+}
+
+function ConfirmModal({ action, referral, onConfirm, onCancel }) {
+  const isAccept = action === 'accept';
+  return (
+    <div className="confirm-modal-overlay" onClick={onCancel}>
+      <div className="confirm-modal" onClick={e => e.stopPropagation()}>
+        <div className={`confirm-modal__icon ${isAccept ? 'confirm-modal__icon--accept' : 'confirm-modal__icon--decline'}`}>
+          {isAccept ? <CheckCircle size={22} /> : <AlertTriangle size={22} />}
+        </div>
+        <div className="confirm-modal__title">
+          {isAccept ? 'Accept Referral?' : 'Decline Referral?'}
+        </div>
+        <div className="confirm-modal__body">
+          {isAccept
+            ? 'Are you sure you want to accept this referral? The referring dentist will be notified.'
+            : 'Are you sure you want to decline this referral? This action cannot be undone.'}
+          <div className="confirm-modal__detail">
+            <div className="confirm-modal__detail-row">
+              <span className="confirm-modal__detail-label">Patient</span>
+              <span className="confirm-modal__detail-value">{referral.patient}</span>
+            </div>
+            <div className="confirm-modal__detail-row">
+              <span className="confirm-modal__detail-label">Referred By</span>
+              <span className="confirm-modal__detail-value">{referral.from}</span>
+            </div>
+            <div className="confirm-modal__detail-row">
+              <span className="confirm-modal__detail-label">Specialty</span>
+              <span className="confirm-modal__detail-value">{referral.specialty}</span>
+            </div>
+          </div>
+        </div>
+        <div className="confirm-modal__actions">
+          <button className="btn btn-secondary btn-sm" onClick={onCancel}>Cancel</button>
+          <button className={`btn ${isAccept ? 'btn-primary' : 'btn-danger'} btn-sm`} onClick={onConfirm}>
+            {isAccept ? <><CheckCircle size={13} /> Accept</> : <><XCircle size={13} /> Decline</>}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
