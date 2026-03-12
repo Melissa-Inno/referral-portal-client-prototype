@@ -40,12 +40,12 @@ const testimonials = [
 
 const plans = [
   {
-    name: 'Monthly', price: '$29', period: '/month', highlight: false, badge: null, savings: null,
+    name: 'Monthly', price: '$10', period: '/month', highlight: false, badge: null, savings: null,
     features: ['Unlimited referrals sent & received', 'Full specialist directory access', 'Referral history & tracking', 'Digital record attachments', 'Peer reviews & ratings', 'Priority support'],
   },
   {
-    name: 'Annual', price: '$299', period: '/year', highlight: true, badge: 'Most Popular',
-    savings: 'Save $49 vs monthly',
+    name: 'Annual', price: '$99', period: '/year', highlight: true, badge: 'Most Popular',
+    savings: 'Save $21 vs monthly',
     features: ['Unlimited referrals sent & received', 'Full specialist directory access', 'Referral history & tracking', 'Digital record attachments', 'Peer reviews & ratings', 'Priority support'],
   },
 ];

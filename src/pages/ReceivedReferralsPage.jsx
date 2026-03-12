@@ -59,7 +59,15 @@ export default function ReceivedReferralsPage() {
         </div>
       </div>
 
-      {/* Filters */}
+      {/* Export + Filters */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 8 }}>
+        <ExportButton
+          headers={['Referral ID', 'Patient', 'From', 'Specialty', 'Date', 'Status']}
+          rows={filtered.map(r => [r.id, r.patient, r.from, r.specialty, r.date, statuses[r.id]])}
+          filenameBase="received-referrals"
+          title="Received Referrals"
+        />
+      </div>
       <div className="filter-bar">
         <input
           className="input"

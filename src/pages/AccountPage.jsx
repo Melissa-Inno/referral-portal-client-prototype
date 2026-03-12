@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { DollarSign, Shield, Smartphone, UserSquare2 } from 'lucide-react';
 import Badge from '../components/Badge';
+import ExportButton from '../components/ExportButton';
 import { currentUser, invoices } from '../data/sampleData';
 
 export default function AccountPage() {
@@ -57,7 +58,7 @@ export default function AccountPage() {
                 <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>Professional Annual</div>
               </div>
               <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--accent)', marginBottom: 12 }}>
-                $299<span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-secondary)' }}>/year</span>
+                $99<span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-secondary)' }}>/year</span>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 16 }}>
                 <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
@@ -78,6 +79,12 @@ export default function AccountPage() {
           <div className="card">
             <div className="card-header">
               <span className="card-header__title">Invoices</span>
+              <ExportButton
+                headers={['Invoice ID', 'Date', 'Amount', 'Status', 'Description']}
+                rows={invoices.map(inv => [inv.id, inv.date, inv.amount, inv.status, inv.description])}
+                filenameBase="invoices"
+                title="Billing Invoices"
+              />
             </div>
             <div className="card-body-0">
               {invoices.map(inv => (

@@ -231,6 +231,20 @@ export default function AnalyticsPage() {
   const maxWeekly = useMemo(() => Math.max(...weekly.map(d => d.value)), [weekly]);
   const totalStatus = useMemo(() => status.reduce((s, x) => s + x.count, 0), [status]);
 
+  const analyticsHeaders = ['Metric', 'Category', 'Value'];
+  const analyticsRows = [
+    ...monthly.map(m => ['Referrals', m.month, `Sent: ${m.sent}, Received: ${m.received}`]),
+    ...specialty.map(s => ['Specialty Breakdown', s.name, String(s.count)]),
+    ...topDentists.map(d => ['Top Partner', d.name, `${d.referrals} referrals`]),
+    ...status.map(s => ['Status', s.label, String(s.count)]),
+    ...weekly.map(d => ['Weekly Activity', d.day, String(d.value)]),
+    ...responseTime.map(r => ['Response Time', r.label, `${r.pct}%`]),
+    ['KPI', 'Total Sent', String(kpi.sent)],
+    ['KPI', 'Total Received', String(kpi.received)],
+    ['KPI', 'Completion Rate', String(kpi.completionRate)],
+    ['KPI', 'Active Partners', String(kpi.activePartners)],
+  ];
+
   const kpiCards = [
     {
       label: 'Total Sent',
@@ -273,7 +287,14 @@ export default function AnalyticsPage() {
           <div className="page-title">Analytics</div>
           <div className="page-subtitle">Track your referral performance and network activity.</div>
         </div>
-        <div className="styled-select-wrap" style={{ marginTop: 4 }}>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 4 }}>
+          <ExportButton
+            headers={analyticsHeaders}
+            rows={analyticsRows}
+            filenameBase="analytics-report"
+            title="Analytics Report"
+          />
+        <div className="styled-select-wrap">
           <select
             className="input"
             value={period}
@@ -285,6 +306,7 @@ export default function AnalyticsPage() {
             <option value="6months">Last 6 months</option>
             <option value="1year">Last year</option>
           </select>
+        </div>
         </div>
       </div>
 

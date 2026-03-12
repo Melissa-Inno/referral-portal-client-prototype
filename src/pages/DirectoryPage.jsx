@@ -41,6 +41,15 @@ export default function DirectoryPage() {
         </div>
       </div>
 
+      {/* Export + Filters */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 8 }}>
+        <ExportButton
+          headers={['Name', 'Practice', 'Specialty', 'City', 'Rating', 'Referrals', 'Accepting']}
+          rows={filtered.map(d => [d.name, d.practice, d.specialty, d.city, d.rating, d.referrals, d.acceptingReferrals ? 'Yes' : 'No'])}
+          filenameBase="dentist-directory"
+          title="Dentist Directory"
+        />
+      </div>
       {/* Filters + Sort */}
       <div className="filter-bar">
         <input

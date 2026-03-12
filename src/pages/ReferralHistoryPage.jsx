@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Eye, Download, FileSearch, X, FileText, Calendar, User, Stethoscope, Hash, ChevronDown } from 'lucide-react';
 import Badge from '../components/Badge';
+import ExportButton from '../components/ExportButton';
 import { sentReferrals, receivedReferrals } from '../data/sampleData';
 
 export default function ReferralHistoryPage() {
@@ -42,6 +43,16 @@ export default function ReferralHistoryPage() {
         >
           Received ({receivedReferrals.length})
         </button>
+      </div>
+
+      {/* Export */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 8 }}>
+        <ExportButton
+          headers={['Referral ID', 'Patient', tab === 'sent' ? 'To' : 'From', 'Specialty', 'Date', 'Status']}
+          rows={filtered.map(r => [r.id, r.patient, tab === 'sent' ? r.to : r.from, r.specialty, r.date, r.status])}
+          filenameBase={`referral-history-${tab}`}
+          title={`Referral History — ${tab === 'sent' ? 'Sent' : 'Received'}`}
+        />
       </div>
 
       {/* Filters */}
