@@ -1,15 +1,27 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Eye, Download, FileSearch, X, FileText, Calendar, User, Stethoscope, Hash, ChevronDown } from 'lucide-react';
 import Badge from '../components/Badge';
 import ExportButton from '../components/ExportButton';
 import { sentReferrals, receivedReferrals } from '../data/sampleData';
 
 export default function ReferralHistoryPage() {
+  const location = useLocation();
   const [tab, setTab] = useState('sent');
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [dateFilter, setDateFilter] = useState('Last 30 days');
   const [drawerReferral, setDrawerReferral] = useState(null);
+
+  useEffect(() => {
+    const { openRef, tab: openTab } = location.state || {};
+    if (!openRef) return;
+    const tabToUse = openTab || (sentReferrals.some(r => r.id === openRef) ? 'sent' : 'received');
+    setTab(tabToUse);
+    const source = tabToUse === 'sent' ? sentReferrals : receivedReferrals;
+    const found = source.find(r => r.id === openRef);
+    if (found) setDrawerReferral({ ...found, tab: tabToUse });
+  }, []);
 
   const data = tab === 'sent' ? sentReferrals : receivedReferrals;
 

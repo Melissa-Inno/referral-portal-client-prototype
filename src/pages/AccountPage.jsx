@@ -58,7 +58,7 @@ export default function AccountPage() {
                 <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>Professional Annual</div>
               </div>
               <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--accent)', marginBottom: 12 }}>
-                $99<span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-secondary)' }}>/year</span>
+                $240<span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-secondary)' }}>/year</span>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 16 }}>
                 <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>

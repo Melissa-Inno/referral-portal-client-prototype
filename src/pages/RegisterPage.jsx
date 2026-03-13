@@ -144,7 +144,7 @@ function StepPayment() {
       </p>
       <div className="plan-card">
         <div className="plan-card__name">Professional Annual Plan</div>
-        <div className="plan-card__price">$99<span>/year</span></div>
+        <div className="plan-card__price">$240<span>/year</span></div>
         <div className="plan-card__features">
           {[
             'Unlimited referrals sent & received',

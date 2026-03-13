@@ -108,9 +108,9 @@ export const receivedReferrals = [
 ];
 
 export const invoices = [
-  { id: 'INV-2026-001', date: 'Mar 15, 2026', amount: '$99.00', status: 'Upcoming', description: 'Annual Membership Renewal' },
-  { id: 'INV-2025-001', date: 'Mar 15, 2025', amount: '$99.00', status: 'Paid',     description: 'Annual Membership'         },
-  { id: 'INV-2024-001', date: 'Mar 15, 2024', amount: '$99.00', status: 'Paid',     description: 'Annual Membership'         },
+  { id: 'INV-2026-001', date: 'Mar 15, 2026', amount: '$240.00', status: 'Upcoming', description: 'Annual Membership Renewal' },
+  { id: 'INV-2025-001', date: 'Mar 15, 2025', amount: '$240.00', status: 'Paid',     description: 'Annual Membership'         },
+  { id: 'INV-2024-001', date: 'Mar 15, 2024', amount: '$240.00', status: 'Paid',     description: 'Annual Membership'         },
 ];
 
 export const notifications = [
@@ -118,7 +118,7 @@ export const notifications = [
   { id: 2, type: 'received',  title: 'New referral received',     body: 'Dr. David Walsh sent J. Thompson for Periodontics',     time: '5h ago',  read: false },
   { id: 3, type: 'pending',   title: 'Referral awaiting response', body: 'K. Williams → Dr. Lisa Chen has been pending 2 days',  time: '1d ago',  read: false },
   { id: 4, type: 'completed', title: 'Referral completed',        body: 'A. Brown treated by Dr. Marcus Rivera (REF-2026-0325)', time: '3d ago',  read: true  },
-  { id: 5, type: 'billing',   title: 'Renewal coming up',         body: 'Annual membership renews Mar 15, 2027 — $99.00',       time: '5d ago',  read: true  },
+  { id: 5, type: 'billing',   title: 'Renewal coming up',         body: 'Annual membership renews Mar 15, 2027 — $240.00',      time: '5d ago',  read: true  },
 ];
 
 export const stats = {

@@ -26,10 +26,10 @@ const features = [
 ];
 
 const steps = [
-  { num: '01', title: 'Create your account', desc: 'Sign up and complete your practice profile in minutes. No lengthy onboarding.' },
-  { num: '02', title: 'Join the network',    desc: 'Browse verified specialists in your area and build your referral network.' },
-  { num: '03', title: 'Send referrals',      desc: 'Upload patient records, pick a dentist, and submit. Done in seconds.' },
-  { num: '04', title: 'Track outcomes',      desc: 'Follow every referral with real-time status and automated notifications.' },
+  { num: 'Step 1', title: 'Create your account', desc: 'Sign up and complete your practice profile in minutes. No lengthy onboarding.' },
+  { num: 'Step 2', title: 'Join the network',    desc: 'Browse verified specialists in your area and build your referral network.' },
+  { num: 'Step 3', title: 'Send referrals',      desc: 'Upload patient records, pick a dentist, and submit. Done in seconds.' },
+  { num: 'Step 4', title: 'Track outcomes',      desc: 'Follow every referral with real-time status and automated notifications.' },
 ];
 
 const testimonials = [
@@ -40,12 +40,22 @@ const testimonials = [
 
 const plans = [
   {
-    name: 'Monthly', price: '$10', period: '/month', highlight: false, badge: null, savings: null,
+    name: 'Monthly', price: '$25', period: '/month', highlight: false, badge: null, savings: null,
     features: ['Unlimited referrals sent & received', 'Full specialist directory access', 'Referral history & tracking', 'Digital record attachments', 'Peer reviews & ratings', 'Priority support'],
   },
   {
-    name: 'Annual', price: '$99', period: '/year', highlight: true, badge: 'Most Popular',
-    savings: 'Save $21 vs monthly',
+    name: '1 Year', price: '$240', period: '/year', highlight: true, badge: 'Most Popular',
+    savings: 'Save $60 vs monthly',
+    features: ['Unlimited referrals sent & received', 'Full specialist directory access', 'Referral history & tracking', 'Digital record attachments', 'Peer reviews & ratings', 'Priority support'],
+  },
+  {
+    name: '2 Years', price: '$460', period: '/2 years', highlight: false, badge: null,
+    savings: 'Save $140 vs monthly',
+    features: ['Unlimited referrals sent & received', 'Full specialist directory access', 'Referral history & tracking', 'Digital record attachments', 'Peer reviews & ratings', 'Priority support'],
+  },
+  {
+    name: '3 Years', price: '$660', period: '/3 years', highlight: false, badge: 'Best Value',
+    savings: 'Save $240 vs monthly',
     features: ['Unlimited referrals sent & received', 'Full specialist directory access', 'Referral history & tracking', 'Digital record attachments', 'Peer reviews & ratings', 'Priority support'],
   },
 ];
@@ -151,13 +161,22 @@ export default function LandingPage() {
             </div>
             <div className="landing-preview__body">
               <div className="landing-preview__sidebar">
-                {['Dashboard','Submit Referral','History','Directory','Account'].map(item => (
+                {['Dashboard','Submit Referral','Referral History','Received','Directory','Analytics','Messages'].map(item => (
                   <div key={item} className={`landing-preview__nav-item${item === 'Dashboard' ? ' active' : ''}`}>{item}</div>
                 ))}
               </div>
               <div className="landing-preview__content">
+                <div className="landing-preview__page-header">
+                  <div className="landing-preview__page-title">Dashboard</div>
+                  <div className="landing-preview__page-sub">Good morning — here's what's happening.</div>
+                </div>
                 <div className="landing-preview__stat-row">
-                  {[{v:'7',l:'Sent'},{v:'3',l:'Received'},{v:'2',l:'Pending'},{v:'148',l:'Network'}].map(s => (
+                  {[
+                    {v:'7',  l:'Sent This Month'},
+                    {v:'3',  l:'Received'},
+                    {v:'2',  l:'Pending Review'},
+                    {v:'148',l:'Network'},
+                  ].map(s => (
                     <div key={s.l} className="landing-preview__stat-card">
                       <div className="landing-preview__stat-val">{s.v}</div>
                       <div className="landing-preview__stat-lbl">{s.l}</div>
@@ -166,12 +185,16 @@ export default function LandingPage() {
                 </div>
                 <div className="landing-preview__row-list">
                   {[
-                    { text: 'M. Johnson → Dr. James Park',    status: 'accepted',  label: 'Accepted' },
-                    { text: 'K. Williams → Dr. Lisa Chen',    status: 'pending',   label: 'Pending' },
-                    { text: 'A. Brown → Dr. Marcus Rivera',   status: 'completed', label: 'Completed' },
+                    { patient: 'M. Johnson',  to: 'Dr. James Park',    status: 'accepted',  label: 'Accepted' },
+                    { patient: 'K. Williams', to: 'Dr. Lisa Chen',     status: 'pending',   label: 'Pending' },
+                    { patient: 'A. Brown',    to: 'Dr. Marcus Rivera', status: 'completed', label: 'Completed' },
                   ].map(r => (
-                    <div key={r.text} className="landing-preview__row">
-                      <div className="landing-preview__row-text">{r.text}</div>
+                    <div key={r.patient} className="landing-preview__row">
+                      <div className="landing-preview__row-text">
+                        <span style={{ filter: 'blur(3.5px)', userSelect: 'none' }}>{r.patient}</span>
+                        {' → '}
+                        <span style={{ filter: 'blur(3.5px)', userSelect: 'none' }}>{r.to}</span>
+                      </div>
                       <div className={`landing-preview__row-badge ${r.status}`}>{r.label}</div>
                     </div>
                   ))}
@@ -224,14 +247,19 @@ export default function LandingPage() {
             <p className="landing-section__sub">No complicated setup. No training sessions. Just sign up and start sending referrals.</p>
           </div>
           <div className="landing-steps">
-            {steps.map((s, i) => (
-              <div key={s.num} className="landing-step reveal" style={{ '--delay': `${i * 80}ms` }}>
-                <div className="landing-step__connector" />
-                <div className="landing-step__num">{s.num}</div>
-                <div className="landing-step__title">{s.title}</div>
-                <div className="landing-step__desc">{s.desc}</div>
-              </div>
-            ))}
+            {steps.flatMap((s, i) => {
+              const step = (
+                <div key={s.num} className="landing-step reveal" style={{ '--delay': `${i * 80}ms` }}>
+                  <div className="landing-step__num">{s.num}</div>
+                  <div className="landing-step__title">{s.title}</div>
+                  <div className="landing-step__desc">{s.desc}</div>
+                </div>
+              );
+              if (i < steps.length - 1) {
+                return [step, <div key={`arrow-${i}`} className="landing-step__arrow"><ArrowRight size={20} /></div>];
+              }
+              return [step];
+            })}
           </div>
         </div>
       </section>

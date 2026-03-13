@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Eye, Download, FileSearch, X, FileText, Calendar, User, Stethoscope, Hash, ChevronDown, CheckCircle, XCircle, Inbox, AlertTriangle } from 'lucide-react';
 import Badge from '../components/Badge';
 import ExportButton from '../components/ExportButton';
 import { receivedReferrals } from '../data/sampleData';
 
 export default function ReceivedReferralsPage() {
+  const location = useLocation();
   const [search, setSearch]             = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [drawerReferral, setDrawerReferral] = useState(null);
@@ -12,6 +14,13 @@ export default function ReceivedReferralsPage() {
   const [statuses, setStatuses]         = useState(() =>
     Object.fromEntries(receivedReferrals.map(r => [r.id, r.status]))
   );
+
+  useEffect(() => {
+    const { openRef } = location.state || {};
+    if (!openRef) return;
+    const found = receivedReferrals.find(r => r.id === openRef);
+    if (found) setDrawerReferral({ ...found, status: found.status });
+  }, []);
 
   const filtered = receivedReferrals.filter(r => {
     const matchSearch =

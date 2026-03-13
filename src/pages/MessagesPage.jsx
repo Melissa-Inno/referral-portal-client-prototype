@@ -1,11 +1,34 @@
 import { useState, useRef, useEffect } from 'react';
-import { Search, Send, Plus, X, MessageSquare, ArrowLeft, ChevronRight } from 'lucide-react';
-import { dentists } from '../data/sampleData';
+import { Search, Send, Plus, X, MessageSquare, ArrowLeft, ChevronRight, User, Stethoscope, Hash, Calendar, FileText, Download } from 'lucide-react';
+import { dentists, sentReferrals, receivedReferrals } from '../data/sampleData';
+import Badge from '../components/Badge';
 import { useMessages } from '../context/MessagesContext';
+
+const REF_PATTERN = /\b(REF-\d{4}-\d{4})\b/g;
+
+function linkifyRefs(text, onRefClick) {
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+  REF_PATTERN.lastIndex = 0;
+  while ((match = REF_PATTERN.exec(text)) !== null) {
+    if (match.index > lastIndex) parts.push(text.slice(lastIndex, match.index));
+    const refId = match[1];
+    parts.push(
+      <button key={match.index} className="msg-ref-link" onClick={() => onRefClick(refId)}>
+        {refId}
+      </button>
+    );
+    lastIndex = REF_PATTERN.lastIndex;
+  }
+  if (lastIndex < text.length) parts.push(text.slice(lastIndex));
+  return parts;
+}
 
 export default function MessagesPage() {
   const { convos, markRead, addMessage, totalUnread } = useMessages();
   const [activeId, setActiveId] = useState(null);
+  const [refModal, setRefModal] = useState(null);
   const [search, setSearch] = useState('');
   const [input, setInput] = useState('');
   const [showCompose, setShowCompose] = useState(false);
@@ -25,6 +48,13 @@ export default function MessagesPage() {
     setActiveId(id);
     setMobileView('thread');
     markRead(id);
+  }
+
+  function handleRefClick(refId) {
+    const sent = sentReferrals.find(r => r.id === refId);
+    if (sent) { setRefModal({ ...sent, direction: 'sent' }); return; }
+    const received = receivedReferrals.find(r => r.id === refId);
+    if (received) setRefModal({ ...received, direction: 'received' });
   }
 
   function sendMessage() {
@@ -134,7 +164,7 @@ export default function MessagesPage() {
                           <div className="avatar msg-avatar">{activeConvo.with.initials}</div>
                         )}
                         <div className={`msg-bubble${isMe ? ' msg-bubble--me' : ' msg-bubble--them'}`}>
-                          <div className="msg-bubble__text">{msg.text}</div>
+                          <div className="msg-bubble__text">{linkifyRefs(msg.text, handleRefClick)}</div>
                           <div className="msg-bubble__time">{msg.time}</div>
                         </div>
                       </div>
@@ -173,6 +203,84 @@ export default function MessagesPage() {
       </div>
 
       {showCompose && <ComposeDrawer onClose={() => setShowCompose(false)} />}
+      {refModal && <RefDrawer referral={refModal} onClose={() => setRefModal(null)} />}
+    </>
+  );
+}
+
+function RefDrawer({ referral: r, onClose }) {
+  const isSent = r.direction === 'sent';
+  return (
+    <>
+      <div className="drawer-overlay" onClick={onClose} />
+      <div className="drawer">
+        <div className="drawer__header">
+          <div>
+            <div className="drawer__title">Referral Details</div>
+            <div className="mono-accent" style={{ fontSize: 12, marginTop: 3 }}>{r.id}</div>
+          </div>
+          <button className="drawer__close" onClick={onClose} title="Close"><X size={16} /></button>
+        </div>
+
+        <div className="drawer__body">
+          <div className="drawer__badge-row">
+            <Badge status={r.status} />
+            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{r.date}</span>
+          </div>
+
+          <div className="drawer__section">
+            <div className="drawer__section-title">Referral Info</div>
+            <div className="drawer__info-grid">
+              <div className="drawer__info-row">
+                <span className="drawer__info-icon"><User size={13} /></span>
+                <span className="drawer__info-label">Patient</span>
+                <span className="drawer__info-value">{r.patient}</span>
+              </div>
+              <div className="drawer__info-row">
+                <span className="drawer__info-icon"><Stethoscope size={13} /></span>
+                <span className="drawer__info-label">{isSent ? 'Referred To' : 'Referred By'}</span>
+                <span className="drawer__info-value">{isSent ? r.to : r.from}</span>
+              </div>
+              <div className="drawer__info-row">
+                <span className="drawer__info-icon"><Hash size={13} /></span>
+                <span className="drawer__info-label">Specialty</span>
+                <span className="drawer__info-value">{r.specialty}</span>
+              </div>
+              <div className="drawer__info-row">
+                <span className="drawer__info-icon"><Calendar size={13} /></span>
+                <span className="drawer__info-label">Date</span>
+                <span className="drawer__info-value">{r.date}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="drawer__section">
+            <div className="drawer__section-title">Attached File</div>
+            <div className="file-preview" style={{ margin: 0 }}>
+              <div className="file-preview__icon"><FileText size={18} /></div>
+              <div>
+                <div className="file-preview__name">patient_records_2026.pdf</div>
+                <div className="file-preview__size">2.4 MB</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="drawer__section">
+            <div className="drawer__section-title">Referral Notes</div>
+            {r.notes ? (
+              <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.65 }}>{r.notes}</p>
+            ) : (
+              <p style={{ fontSize: 13, color: 'var(--text-muted)', fontStyle: 'italic' }}>No notes included.</p>
+            )}
+          </div>
+        </div>
+
+        <div className="drawer__footer">
+          <button className="btn btn-secondary" style={{ flex: 1, justifyContent: 'center' }}>
+            <Download size={14} /> Download
+          </button>
+        </div>
+      </div>
     </>
   );
 }
