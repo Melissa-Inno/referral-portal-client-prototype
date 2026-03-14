@@ -49,13 +49,13 @@ const plans = [
     features: ['Unlimited referrals sent & received', 'Full specialist directory access', 'Referral history & tracking', 'Digital record attachments', 'Peer reviews & ratings', 'Priority support'],
   },
   {
-    name: '2 Years', price: '$460', period: '/2 years', highlight: false, badge: null,
-    savings: 'Save $140 vs monthly',
+    name: '2 Years', price: '$440', period: '/2 years', highlight: false, badge: null,
+    savings: 'Save $160 vs monthly',
     features: ['Unlimited referrals sent & received', 'Full specialist directory access', 'Referral history & tracking', 'Digital record attachments', 'Peer reviews & ratings', 'Priority support'],
   },
   {
-    name: '3 Years', price: '$660', period: '/3 years', highlight: false, badge: 'Best Value',
-    savings: 'Save $240 vs monthly',
+    name: '3 Years', price: '$600', period: '/3 years', highlight: false, badge: 'Best Value',
+    savings: 'Save $300 vs monthly',
     features: ['Unlimited referrals sent & received', 'Full specialist directory access', 'Referral history & tracking', 'Digital record attachments', 'Peer reviews & ratings', 'Priority support'],
   },
 ];
